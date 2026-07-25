@@ -1,17 +1,16 @@
 const express = require('express');
 const router = express.Router();
+
 const authenticate =
     require('../middleware/authMiddleware');
 
-const authController = require('../controllers/authController');
-
-// Login
-router.post('/login', authController.login);
+const biometricController =
+    require('../controllers/biometricController');
 
 router.post(
-    '/verify-biometric',
+    '/verify',
     authenticate,
-    authController.verifyBiometric
+    biometricController.verifyBiometric
 );
 
 module.exports = router;

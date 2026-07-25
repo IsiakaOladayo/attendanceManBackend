@@ -1,17 +1,17 @@
 const pool = require('../config/db');
 
-const createUser = async (name, email, password, role_id) => {
-    const query = `
-        INSERT INTO users (name, email, password, role_id)
-        VALUES ($1, $2, $3, $4)
-        RETURNING id, name, email, role_id, created_at;
-    `;
+//const createUser = async (name, email, password, role_id) => {
+//    const query = `
+//        INSERT INTO users (name, email, password, role_id)
+//        VALUES ($1, $2, $3, $4)
+//        RETURNING id, name, email, role_id, created_at;
+//    `;
 
-    const values = [name, email, password, role_id];
+//    const values = [name, email, password, role_id];
 
-    const result = await pool.query(query, values);
-    return result.rows[0];
-};
+//    const result = await pool.query(query, values);
+//    return result.rows[0];
+//};
 
 const getAllUsers = async () => {
     const query = `
@@ -45,9 +45,80 @@ const getUserByEmail = async (email) => {
     return result.rows[0];
 };
 
+const createUser = async (
+    name,
+    email,
+    password,
+    role_id
+) => {
+
+    const result = await pool.query(
+        `
+        INSERT INTO users
+        (
+            name,
+            email,
+            password,
+            role_id
+        )
+        VALUES ($1,$2,$3,$4)
+        RETURNING *
+        `,
+        [
+            name,
+            email,
+            password,
+            role_id
+        ]
+    );
+
+    return result.rows[0];
+};
+
+const updateUser = async (
+    id,
+    name,
+    email,
+    role_id
+) => {
+
+    const result = await pool.query(
+        `
+        UPDATE users
+        SET
+            name = $1,
+            email = $2,
+            role_id = $3
+        WHERE id = $4
+        RETURNING *
+        `,
+        [
+            name,
+            email,
+            role_id,
+            id
+        ]
+    );
+
+    return result.rows[0];
+};
+
+const deleteUser = async (id) => {
+
+    await pool.query(
+        `
+        DELETE FROM users
+        WHERE id = $1
+        `,
+        [id]
+    );
+};
+
 module.exports = {
-    createUser,
     getAllUsers,
     getUserById,
-    getUserByEmail
+    getUserByEmail,
+    createUser,
+    updateUser,
+    deleteUser
 };
