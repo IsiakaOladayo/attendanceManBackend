@@ -23,12 +23,29 @@ app.use('/api/auth', authRoutes);
 app.use('/api/biometric', biometricRoutes);
 
 
-app.get('/test-db', async (req, res) => {
+app.get("/test-db", async (req, res) => {
     try {
-        const result = await pool.query('SELECT NOW()');
+
+        console.log("Pool Config:", {
+            host: pool.options.host,
+            port: pool.options.port,
+            user: pool.options.user,
+            database: pool.options.database
+        });
+
+        const result = await pool.query("SELECT current_user, current_database(), NOW()");
+
         res.json(result.rows[0]);
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+
+        console.error(error);
+
+        res.status(500).json({
+            message: error.message,
+            stack: error.stack
+        });
+
     }
 });
 
