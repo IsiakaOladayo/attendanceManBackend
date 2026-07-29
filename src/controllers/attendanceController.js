@@ -72,50 +72,20 @@ const checkOut = async (req, res) => {
     try {
 
         const user_id = req.user.id;
+
+        // Validate request body
+        if (!req.body || !req.body.bssid) {
+            return res.status(400).json({
+                message: "BSSID is required"
+            });
+        }
+
         const { bssid } = req.body;
 
         console.log("Received BSSID:", bssid);
 
         // Verify Wi-Fi network
-        const allowed = await networkModel.isAllowedNetwork(bssid);
-
-        if (!allowed) {
-            return res.status(403).json({
-                message: "You are not connected to an approved network"
-            });
-        }
-
-        // Verify recent biometric authentication
-        const verified =
-            await biometricModel.isRecentlyVerified(user_id);
-
-        if (!verified) {
-            return res.status(403).json({
-                message: "Biometric verification required"
-            });
-        }
-
-        // Perform checkout
-        const record =
-            await attendanceModel.checkOut(user_id);
-
-        if (!record) {
-            return res.status(404).json({
-                message: "No active attendance session found"
-            });
-        }
-
-        res.json(record);
-
-    } catch (error) {
-
-        console.log(error);
-
-        res.status(500).json({
-            error: error.message
-        });
-    }
-};
+        const allowed = await networkModel.isAllowedNetwork(bssid);;
 
 const getUserAttendance = async (req, res) => {
     try {
