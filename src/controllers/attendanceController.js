@@ -125,6 +125,18 @@ const checkOut = async (req, res) => {
     }
 };
 
+const getUserAttendance = async (req, res) => {
+    try {
+        const records = await attendanceModel.getUserAttendance(
+            req.user.id
+        );
+
+        res.json(records);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 const getAllAttendance = async (req, res) => {
     try {
         const records = await attendanceModel.getAllAttendance();
