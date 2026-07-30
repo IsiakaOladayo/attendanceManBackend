@@ -120,13 +120,14 @@ const getProfile = async (userId) => {
     const result = await pool.query(
         `
         SELECT
-            id,
-            full_name,
-            email,
-            role,
-            department
+            users.id,
+            users.name AS full_name,
+            users.email,
+            roles.role_name AS role
         FROM users
-        WHERE id = $1
+        JOIN roles
+            ON users.role_id = roles.id
+        WHERE users.id = $1
         `,
         [userId]
     );
