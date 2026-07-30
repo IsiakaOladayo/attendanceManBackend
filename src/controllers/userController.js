@@ -39,8 +39,26 @@ const getUserById = async (req, res) => {
     }
 };
 
+const getProfile = async (req, res) => {
+
+    try {
+
+        const user =
+            await userModel.getProfile(req.user.id);
+
+        res.json(user);
+
+    } catch (err) {
+
+        res.status(500).json({
+            error: err.message
+        });
+    }
+};
+
 module.exports = {
     createUser,
     getAllUsers,
-    getUserById
+    getUserById,
+    getProfile
 };

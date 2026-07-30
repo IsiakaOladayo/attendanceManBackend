@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 
+
 //const createUser = async (name, email, password, role_id) => {
 //    const query = `
 //        INSERT INTO users (name, email, password, role_id)
@@ -114,11 +115,31 @@ const deleteUser = async (id) => {
     );
 };
 
+const getProfile = async (userId) => {
+
+    const result = await pool.query(
+        `
+        SELECT
+            id,
+            full_name,
+            email,
+            role,
+            department
+        FROM users
+        WHERE id = $1
+        `,
+        [userId]
+    );
+
+    return result.rows[0];
+};
+
 module.exports = {
     getAllUsers,
     getUserById,
     getUserByEmail,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getProfile
 };
